@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @Controller
 @RequestMapping("/categoria")
 public class CategoriaController {
@@ -30,20 +31,12 @@ public class CategoriaController {
 
         model.addAttribute("categorias",
                 categorias);
-         model.addAttribute("totalcateogiras",
+         model.addAttribute("totalCategorias",
                 categorias.size());
 
       
         return "/categoria/listado";
         
-    }
-    
-    @GetMapping("/listado")
-    public String inicio(Model model) {
-        var categorias = categoriaService.getCategorias(false);
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("totalCategorias", categorias.size());
-        return "/categoria/listado";
     }
     
     @GetMapping("/nuevo")
@@ -52,7 +45,7 @@ public class CategoriaController {
     }
 
     @Autowired
-    private FirebaseStorageService FirebaseStorageService;
+    private FirebaseStorageService firebaseStorageService;
     
     @PostMapping("/guardar")
     public String categoriaGuardar(Categoria categoria,
@@ -60,7 +53,7 @@ public class CategoriaController {
         if (!imagenFile.isEmpty()) {
             categoriaService.save(categoria);
             categoria.setRutaImagen(
-                    FirebaseStorageService.cargaImagen(
+                    firebaseStorageService.cargaImagen(
                             imagenFile, 
                             "categoria", 
                             categoria.getIdCategoria()));

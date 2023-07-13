@@ -18,7 +18,7 @@ public interface CategoriaService {
     
     
     //Abajo se colocaran los metodos para un crud de categorias
-     // Se obtiene un Categoria, a partir del id de un categoria
+   // Se obtiene un Categoria, a partir del id de un categoria
     public Categoria getCategoria(Categoria categoria);
     
     // Se inserta un nuevo categoria si el id del categoria esta vacío

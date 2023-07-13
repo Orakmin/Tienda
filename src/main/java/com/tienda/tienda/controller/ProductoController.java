@@ -6,6 +6,7 @@ package com.tienda.tienda.controller;
 
 import com.tienda.service.FirebaseStorageService;
 import com.tienda.tienda.domain.Producto;
+import com.tienda.tienda.service.CategoriaService;
 import com.tienda.tienda.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,14 +24,21 @@ public class ProductoController {
     
     @Autowired
     private ProductoService productoService;
+    
+    @Autowired
+    private CategoriaService categoriaService;
    
     @GetMapping("/listado")
     public String listado(Model model){
-      var productos = productoService.getProductos(false);
-
-        model.addAttribute("productos",
+        var categorias = categoriaService.getCategorias(false);
+         model.addAttribute("categorias",
+                categorias);
+        
+        
+        var productos = productoService.getProductos(false);
+         model.addAttribute("productos",
                 productos);
-         model.addAttribute("totalcateogiras",
+         model.addAttribute("totalProductos",
                 productos.size());
 
       
@@ -38,13 +46,7 @@ public class ProductoController {
         
     }
     
-    @GetMapping("/listado")
-    public String inicio(Model model) {
-        var productos = productoService.getProductos(false);
-        model.addAttribute("productos", productos);
-        model.addAttribute("totalProductos", productos.size());
-        return "/producto/listado";
-    }
+    
     
     @GetMapping("/nuevo")
     public String productoNuevo(Producto producto) {
@@ -52,7 +54,7 @@ public class ProductoController {
     }
 
     @Autowired
-    private FirebaseStorageService FirebaseStorageService;
+    private FirebaseStorageService firebaseStorageService;
     
     @PostMapping("/guardar")
     public String productoGuardar(Producto producto,
@@ -60,7 +62,7 @@ public class ProductoController {
         if (!imagenFile.isEmpty()) {
             productoService.save(producto);
             producto.setRutaImagen(
-                    FirebaseStorageService.cargaImagen(
+                    firebaseStorageService.cargaImagen(
                             imagenFile, 
                             "producto", 
                             producto.getIdProducto()));
@@ -77,6 +79,12 @@ public class ProductoController {
 
     @GetMapping("/modificar/{idProducto}")
     public String productoModificar(Producto producto, Model model) {
+        var categorias = categoriaService.getCategorias(false);
+         model.addAttribute("categorias",
+                categorias);
+
+        
+        
         producto = productoService.getProducto(producto);
         model.addAttribute("producto", producto);
         return "/producto/modifica";
