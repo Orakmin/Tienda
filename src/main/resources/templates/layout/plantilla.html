@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" 
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org//thymeleaf-extras-springsecurity6">
+
     <head th:fragment="head">
         <title>TechShop</title>
         <meta charset="UTF-8"/>
@@ -21,10 +23,10 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        <ul class="navbar-nav">
+                        <ul class="navbar-nav" sec:authorize='hasRole("ROLE_VENDOR")' >
                             <li class="nav-item px-2"><a class="nav-link" th:href="@{/categoria/listado}">[[#{plantilla.categorias}]]</a></li>
                             <li class="nav-item px-2"><a class="nav-link" th:href="@{/producto/listado}">[[#{plantilla.productos}]]</a></li>                           
-                             <li class="nav-item dropdown">
+                             <li class="nav-item dropdown" sec:authorize='hasRole("ROLE_ADMIN")'   >
                                 <a class="nav-link dropdown-toggle" 
                                    data-bs-toggle="dropdown" 
                                    href="#" 
@@ -46,6 +48,41 @@
                                 </ul>
                             </li>
                         </ul>
+                         
+                        <ul class="navbar-nav" sec:authorize="!isAuthenticated()">
+                            <li class="nav-item text-white my-auto">
+                                <i class="fas fa-user"></i>
+                                <span sec:authentication="name">Bob</span>
+                            </li>
+                            <li class="nav-item my-auto">
+                                <form method="post" 
+                                      th:action="@{/logout}">
+                                    <button class="btn btn-dark"> 
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    </button>                                  
+                                </form>
+                            </li>
+                            <li class="nav item px-2">
+                                <a  class="nav-menu-link nav-link"
+                                    th:href="@{/login}">
+                                    <i class="fas fa-sign-in-alt"></i>  
+                                </a>
+                            </li> 
+                        </ul>
+                        
+                        
+                        
+                        <ul class="navbar-nav" sec:authorize="isAuthenticated()">
+                            <li class="nav item px-2">
+                                <a  class="nav-menu-link nav-link"
+                                    th:href="@{/login}">
+                                    <i class="fas fa-sign-in-alt"></i>  
+                                </a>
+                            </li> 
+                        </ul>
+                        
+                        
+                        
                     </div>
                 </div>
             </nav>
