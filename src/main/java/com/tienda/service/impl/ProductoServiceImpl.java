@@ -11,20 +11,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ProductoServiceImpl implements ProductoService {
 
-    //La anotación Autowired crea un único objeto mientras se ejecuta el app
+    //La anotacion autowired crea un unico objeto sin hacer new.
     @Autowired
     private ProductoDao productoDao;
-    
+
     @Override
     @Transactional(readOnly = true)
     public List<Producto> getProductos(boolean activos) {
-        var lista=productoDao.findAll();        
-        if(activos) {  //Se deben eliminar los que no están activos...
+        var lista = productoDao.findAll();
+        if (activos) {
             lista.removeIf(e -> !e.isActivo());
-        }        
+        }
         return lista;
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public Producto getProducto(Producto producto) {
@@ -43,23 +43,25 @@ public class ProductoServiceImpl implements ProductoService {
         productoDao.delete(producto);
     }
     
-    // Lista de productos con precio entre ordendados por descripción ConsultaAmpliada
-@Override
-@Transactional(readOnly=true)
-public List<Producto> findByPrecioBetweenOrderByDescripcion(double precioInf, double precioSup) {
-  return productoDao.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
-}
-
-@Override
-    @Transactional(readOnly=true)    
-    public List<Producto> metodoJPQL(double precioInf, double precioSup) {
-        return productoDao.metodoJPQL(precioInf, precioSup);
+    //Se implementa el método para recuperar los productos con una consulta ampliada
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto>buscaProductosPorPrecioEntre(double precioInf, double precioSup) {
+        return productoDao.findByPrecioBetweenOrderByDescripcion(precioInf, precioSup);
     }
     
+    //Se implementa el método para recuperar los productos con una consulta JPQL
     @Override
-    @Transactional(readOnly=true)    
-    public List<Producto> metodoNativo(double precioInf, double precioSup) {
-        return productoDao.metodoNativo(precioInf, precioSup);}
-
-
+    @Transactional(readOnly = true)
+    public List<Producto>consultaJPQL(double precioInf, double precioSup) {
+        return productoDao.consultaJPQL(precioInf, precioSup);
+    }
+    
+    //Se implementa el método para recuperar los productos con una consulta SQL
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto>consultaSQL(double precioInf, double precioSup) {
+        return productoDao.consultaSQL(precioInf, precioSup);
+    }
+    
 }
