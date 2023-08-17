@@ -16,6 +16,12 @@ import javax.sql.DataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -87,6 +93,37 @@ public class ReporteServiceImpl implements ReporteService{
                    mediaType = MediaType.APPLICATION_PDF;
                    archivoSalida = reporte+".pdf";
                 }
+                
+                case "Xls" -> {
+                    JRXlsxExporter exportador = new JRXlsxExporter();
+                    exportador.setExporterInput(
+                            new SimpleExporterInput(
+                                    reporteJasper));
+                    exportador.setExporterOutput(
+                            new SimpleOutputStreamExporterOutput(
+                                    salida));
+                    SimpleXlsxReportConfiguration configuracion=
+                            new SimpleXlsxReportConfiguration();
+                    configuracion.setDetectCellType(true);
+                    configuracion.setCollapseRowSpan(true);
+                    exportador.setConfiguration(configuracion);
+                    exportador.exportReport();
+                    mediaType = MediaType.APPLICATION_OCTET_STREAM;
+                    archivoSalida = reporte + ".xlsx";
+                }
+                case "Csv" -> {
+                    JRCsvExporter exportador = new JRCsvExporter();
+                    exportador.setExporterInput(
+                            new SimpleExporterInput(
+                                    reporteJasper));
+                    exportador.setExporterOutput(
+                            new SimpleWriterExporterOutput(
+                                    salida));
+                    exportador.exportReport();
+                    mediaType = MediaType.TEXT_PLAIN;
+                    archivoSalida = reporte + ".csv";
+                    }
+                
             }
             //Se recuperan los bytes del rporte generado
             data=salida.toByteArray();
